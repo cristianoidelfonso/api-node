@@ -1,30 +1,25 @@
 const mongoose = require('mongoose');
-const { Schema } = mongoose;
 
-// const schema = new mongoose.Schema({ name: 'string', size: 'string' });
-// const Tank = mongoose.model('Tank', schema);
-
-const schema = new Schema({
-
+const UserSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true
   },
-
-  email: { 
+  email: {
     type: String,
     required: true,
     match: /.+\@.+\..+/,
     unique: true
-  },
-
+  }, 
   password: {
     type: String,
     required: true
   }
+},
+  {
+    timestamps: true,
+  });
 
-}, { versionKey: false });
+const User = mongoose.model('User', UserSchema);
 
-const UserModel = mongoose.model('User', schema);
-
-module.exports =  mongoose.model('users', UserModel);
+module.exports = User;
