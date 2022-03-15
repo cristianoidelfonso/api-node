@@ -34,7 +34,8 @@ module.exports.store = async (req, res) => {
 module.exports.update = async (req, res) => {
   try {
     const product = await Product.findByIdAndUpdate(req.params.id, req.body);
-    return res.status(200).send({ product });
+    // return res.status(200).send({ product });
+    return res.status(200).redirect('/products');
   } catch (error) {
     return res.status(400).send({ error: 'Error updating product.', error });
   }

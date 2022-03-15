@@ -40,7 +40,7 @@ module.exports.update = (request, response) => {
 }
 
 module.exports.destroy = (request, response) => {
-  const id = request.body._id;
+  const id = request.params.id;
 
   User.findByIdAndRemove(id, (error, user) => {
     if (error) return response.status(500).json({ message: 'Error ao excluir usuários.', error });
