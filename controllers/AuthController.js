@@ -2,18 +2,28 @@ const bcrypt = require('bcryptjs');
 const JWT = require('jsonwebtoken');
 const User = require('../models/User');
 
-// function verifyJWT(req, res, next){
-//   var token = req.headers['x-access-token'];
-//   if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
+
+module.exports.verifyJWT = async (req, res, next) => {
   
-//   JWT.verify(token, process.env.SECRET, function(err, decoded) {
-//     if (err) return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
-    
-//     // se tudo estiver ok, salva no request para uso posterior
-//     req.userId = decoded.id;
-//     next();
-//   });
-// }
+  if (!req.headers["authorization"]) {
+    return res.status(401).send({ auth: false, message: 'No token provided.' });
+  }
+
+  const [type, token] = req.headers["authorization"].split(' ');
+
+  if(type !== 'Bearer' || !token){
+    return res.status(401).send({ auth: false, message: 'No token provided.' });
+  }
+
+  JWT.verify(token, process.env.SECRET, function(error, decoded) {
+    if (error) return res.status(500).send({ auth: false, message: 'Failed to authenticate token.', error });
+  
+    // se tudo estiver ok, salva no request para uso posterior
+    req.userId = decoded.user;
+
+    next();
+  });
+}
 
 module.exports.login = (req, res) => {
   try {
@@ -21,7 +31,7 @@ module.exports.login = (req, res) => {
     User.findOne({ email: req.body.email }).exec((error, user) => {
       if(error) { res.status(500).send({ message: error }); return; }
       if (!user) { return res.status(404).send({ message: "User Not found." });}
-
+      
       // Verifica se a senha informada é valida para o usuario
       const passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
 
