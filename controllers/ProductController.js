@@ -1,49 +1,51 @@
 const Product = require('../models/Product');
 
-module.exports.index = (request, response) => {
-  Product.find({}, (error, products) => {
-    if (error) return response.status(500).json({ message: 'Error ao listar produtos', error });
-    if (products.length <= 0) return response.status(200).send({ message: 'Não há produtos cadastrados.' });
-    response.status(200).send({ message: 'Marcas listadas com sucesso!', products: products });
-  });
-}
+// Index Products
+module.exports.index = async (req, res) => {
+  try {
+    const products = await Product.find().populate(['category', 'brand']);
+    return res.status(200).send({ products });
+  } catch (error) {
+    return res.status(400).send({ error: 'Error loading products.', error });
+  }
+};
 
-module.exports.store = (request, response) => {
-  const product = new Product({
-    name: request.body.name,
-    description: request.body.description,
-    price: request.body.price,
-    stock: request.body.stock,
-    category: request.body.category,
-    brand: request.body.brand,
-  });
+// Show Product
+module.exports.show = async(req, res) => {
+  try {
+    const product = await Product.findById(req.params.id).populate(['category', 'brand']);
+    return res.status(200).send({ product });
+  } catch (error) {
+    return res.status(400).send({ error: 'Error loading product.', error });
+  }
+};
 
-  product.save((error, product) => {
-    if (error) return response.status(500).json({ message: 'Error ao cadastrar novo produto.', error });
-    response.status(201).send({ message: 'Produto cadastrado com sucesso!', product: product });
-  });
-}
+// Store Product 
+module.exports.store = async (req, res) => {
+  try {
+    const product = await Product.create(req.body);
+    return res.status(201).send({ product });
+  } catch (error) {
+    return res.status(400).send({ error: 'Error creating new product.', error });
+  }
+};
 
-module.exports.update = (request, response) => {
-  const id = request.body._id;
-  const name = request.body.name;
-  const description = request.body.description;
-  const price = request.body.price;
-  const stock = request.body.stock;
-  const category = request.body.category;
-  const brand = request.body.brand;
-  
-  Product.findByIdAndUpdate(id, { name, description, price, stock, category, brand }, (error, product) => {
-    if (error) return response.status(500).json({ message: 'Error ao atualizar produto.', error: error });
-    response.status(200).redirect('/products');
-  });
-}
+// Update Product
+module.exports.update = async (req, res) => {
+  try {
+    const product = await Product.findByIdAndUpdate(req.params.id, req.body);
+    return res.status(200).send({ product });
+  } catch (error) {
+    return res.status(400).send({ error: 'Error updating product.', error });
+  }
+};
 
-module.exports.destroy = (request, response) => {
-  const id = request.body._id;
-
-  Product.findByIdAndRemove(id, (error, product) => {
-    if (error) return response.status(500).json({ message: 'Error ao excluir produto.', error: error });
-    response.status(200).redirect('/products');
-  });
-} 
+// Delete Product
+module.exports.destroy = async (req, res) => {
+  try {
+    await Product.findByIdAndRemove(req.params.id);
+    return res.status(200).send();
+  } catch (error) {
+    return res.status(400).send({ error: 'Error deleting product.', error });
+  }
+};
