@@ -3,9 +3,9 @@ const router = express.Router();
 const { verifyJWT } = require('../controllers/AuthController');
 const userController = require('../controllers/UserController');
 
-router.get('/users', verifyJWT,  userController.index);
-router.post('/users', verifyJWT, userController.store);
-router.put('/users/:id', verifyJWT, userController.update);
-router.delete('/users/:id', verifyJWT, userController.destroy);
+router.get('/users', userController.index);
+router.post('/users', userController.store);
+router.put('/users/:id', userController.update);
+router.delete('/users/:id', userController.destroy);
 
 module.exports = router;
