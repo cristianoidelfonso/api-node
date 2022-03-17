@@ -20,7 +20,7 @@ module.exports.store = (request, response) => {
 
   user.save((error, user) => {
     if (error) return response.status(500).json({ message: 'Error ao criar novo usuário.', error });
-    response.status(201).send({ message: 'Usuario criado com sucesso!', user }).redirect('/users');
+    response.status(201).send({ message: 'Usuário criado com sucesso!', user });
   });
 }
 
@@ -35,7 +35,7 @@ module.exports.update = (request, response) => {
 
   User.findByIdAndUpdate(id, payload , (error, user) => {
     if (error) return response.status(500).json({ message: 'Error ao atualizar dados do usuários.', error });
-    response.status(200).redirect('/users');
+    response.status(200).send({ message: 'Usuario atualizado com sucesso!' });
   });
 }
 
@@ -44,6 +44,6 @@ module.exports.destroy = (request, response) => {
 
   User.findByIdAndRemove(id, (error, user) => {
     if (error) return response.status(500).json({ message: 'Error ao excluir usuários.', error });
-    response.status(200).redirect('/users');
+    response.status(200).send({ message: 'Dados do usuário apagados com sucesso!' });
   });
 } 
