@@ -22,8 +22,6 @@ module.exports.store = (request, response) => {
   }
 
   user.save((error, user) => {
-    if (error) return response.status(500).json({ message: 'Error ao criar novo usuário.', error });
-    response.status(201).send({ message: 'Usuário criado com sucesso!', user });
     if(error){
       return response.send(error)
     }else{
