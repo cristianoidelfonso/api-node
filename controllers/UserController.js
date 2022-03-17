@@ -10,17 +10,30 @@ module.exports.index = (request, response) => {
 }
 
 module.exports.store = (request, response) => {
-  const password = bcrypt.hashSync(request.body.password, 15 );
 
   const user = new User({
     name: request.body.name,
     email: request.body.email,
-    password: password,
+    password: request.body.password
   });
+
+  if(user.password){
+    user.password = bcrypt.hashSync(user.password, 8);
+  }
 
   user.save((error, user) => {
     if (error) return response.status(500).json({ message: 'Error ao criar novo usuário.', error });
     response.status(201).send({ message: 'Usuário criado com sucesso!', user });
+    if(error){
+      return response.send(error)
+    }else{
+      return response.status(201)
+        .send({ 
+          message: 'Usuario criado com sucesso!', 
+          id: user._id, 
+          email: user.email 
+        });
+    } 
   });
 }
 
