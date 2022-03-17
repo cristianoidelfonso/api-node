@@ -4,7 +4,7 @@ module.exports.index = (request, response) => {
   Category.find({}, (error, categories) => {
     if (error) return response.status(500).json({ message: 'Error ao listar categorias', error: error });
     if (categories.length <= 0) return response.status(200).send({ message: 'Não há categorias cadastradas.' });
-    response.status(200).send({ message: 'Categorias listadas com sucesso!', categories: categories });
+    response.status(200).send({categories});
   });
 }
 
