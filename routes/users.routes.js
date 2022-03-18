@@ -3,9 +3,12 @@ const router = express.Router();
 const { verifyJWT } = require('../controllers/AuthController');
 const userController = require('../controllers/UserController');
 
-router.get('/users', userController.index);
+// Rota que permite cadastro de novo usuário
 router.post('/users', userController.store);
-router.put('/users/:id', userController.update);
-router.delete('/users/:id', userController.destroy);
+
+
+router.get('/users', verifyJWT, userController.index);
+router.put('/users/:id', verifyJWT, userController.update);
+router.delete('/users/:id', verifyJWT, userController.destroy);
 
 module.exports = router;
