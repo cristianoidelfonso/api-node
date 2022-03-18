@@ -13,6 +13,8 @@ dist-ssr
 *.local
 .env
 database.js
+package-lock.json
+yarn-lockk
 
 # Editor directories and files
 .vscode/*
