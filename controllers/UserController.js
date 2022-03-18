@@ -25,6 +25,7 @@ module.exports.store = (request, response) => {
     if(error){
       return response.status(400).send(error)
     }else{
+      
       return response.status(201)
         .send({ 
           message: 'User created successfully', 
