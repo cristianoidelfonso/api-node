@@ -46,14 +46,17 @@ module.exports.login = async (req, res) => {
     
   // Consulta usuario no banco de dados pelo email
      User.findOne({ email: req.body.email }, {createdAt: 0, updatedAt: 0} ).exec((error, user) => {
-      if(error) { res.status(500).send({ message: error }); return; }
-      if (!user) { res.send({ message: "User Not found."}); return; }
+      if(error) { res.status(400).json({ message: error }); return; }
+      if (!user) { res.status(400).json({ message: "User Not found."}); return; }
+      
       // Verifica se a senha informada é valida para o usuario
       const passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
       if (!passwordIsValid ) {
         return res.status(401).send({ accessToken: null, message: "Invalid Password!" });
       }
-      const token = JWT.sign( { user: user._id }, process.env.SECRET, { expiresIn: 86400 /*24h*/ }); 
+
+      // Gera o token
+      const token = JWT.sign( { user: user._id }, process.env.SECRET, { expiresIn: 43200 /*12h*/ }); 
       return res.status(200).send({
           id: user._id,
           name: user.name,
@@ -63,7 +66,7 @@ module.exports.login = async (req, res) => {
     }); 
 
   } catch (error) {
-    return res.send( error );
+    return res.json( error );
   }
 };
 
