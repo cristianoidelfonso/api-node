@@ -2,9 +2,9 @@ const Brand = require('../models/Brand');
 
 module.exports.index = (request, response) => {
   Brand.find({}, (error, brands) => {
-    if (error) return response.status(500).json({ message: 'Error ao listar marcas', error: error });
-    if (brands.length <= 0) return response.status(200).send({ message: 'Não há marcas cadastradas.' });
-    response.status(200).send({ message: 'Marcas listadas com sucesso!', brands: brands });
+    if (error) return response.status(400).json({ message: 'Error listing brands', error });
+    if (brands.length <= 0) return response.status(200).send({ message: 'There are no registered brands' });
+    response.status(200).send(brands);
   });
 }
 
@@ -14,8 +14,8 @@ module.exports.store = (request, response) => {
   });
 
   brand.save((error, brand) => {
-    if (error) return response.status(500).json({ message: 'Error ao cadastrar nova marca.', error: error });
-    response.status(201).send({ message: 'Marca cadastrada com sucesso!', brand: brand  });
+    if (error) return response.status(400).json({ message: 'Error registering new brand', error });
+    response.status(201).send({ message: 'Brand successfully registered', brand  });
   });
 }
 
@@ -24,8 +24,8 @@ module.exports.update = (request, response) => {
   const name = request.body.name;
   
   Brand.findByIdAndUpdate(id, { name }, (error, brand) => {
-    if (error) return response.status(500).json({ message: 'Error ao atualizar marca.', error: error });
-    response.status(200).redirect('/brands');
+    if (error) return response.status(400).json({ message: 'Error updating brand', error });
+    response.status(200).send({ message: 'Brand successfully updated', brand  });
   });
 }
 
@@ -33,7 +33,7 @@ module.exports.destroy = (request, response) => {
   const id = request.body._id;
 
   Brand.findByIdAndRemove(id, (error, brand) => {
-    if (error) return response.status(500).json({ message: 'Error ao excluir marca.', error: error });
-    response.status(200).redirect('/brands');
+    if (error) return response.status(400).json({ message: 'Error deleting brand', error });
+    response.status(200).send({ message: 'Brand deleted successfully' });
   });
 } 
