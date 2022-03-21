@@ -26,7 +26,7 @@ module.exports.store = async (req, res) => {
     const product = await Product.create(req.body);
     return res.status(201).send(product);
   } catch (error) {
-    return res.status(400).send({ error: 'Error creating new product', error });
+    return res.send({ error: 'Error creating new product', error });
   }
 };
 
